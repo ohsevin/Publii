@@ -41,32 +41,32 @@
 </template>
 
 <script>
-import { remote } from 'electron';
+const { BrowserWindow } = require('@electron/remote')
 
 export default {
     name: 'topbar-appbar',
     methods: {
         appMinimize: function() {
-            if(remote.BrowserWindow.getFocusedWindow()) {
-                remote.BrowserWindow.getFocusedWindow().minimize();
+            if(BrowserWindow.getFocusedWindow()) {
+                BrowserWindow.getFocusedWindow().minimize();
             }
         },
         appMaximize: function() {
-            if(remote.BrowserWindow.getFocusedWindow()) {
-                remote.BrowserWindow.getFocusedWindow().maximize();
+            if(BrowserWindow.getFocusedWindow()) {
+                BrowserWindow.getFocusedWindow().maximize();
             }
 
             this.$store.commit('setWindowState', true);
         },
         appUnmaximize: function() {
-            if(remote.BrowserWindow.getFocusedWindow()) {
-                remote.BrowserWindow.getFocusedWindow().unmaximize();
+            if(BrowserWindow.getFocusedWindow()) {
+                BrowserWindow.getFocusedWindow().unmaximize();
             }
 
             this.$store.commit('setWindowState', false);
         },
         appClose: function() {
-            let allWindows = remote.BrowserWindow.getAllWindows();
+            let allWindows = BrowserWindow.getAllWindows();
 
             for(let i = 0; i < allWindows.length; i++) {
                 allWindows[i].close();

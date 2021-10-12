@@ -25,6 +25,7 @@
   ],
   "homepage": "https://getpublii.com",
   "dependencies": {
+    "@electron/remote": "^2.0.1",
     "@gitbeaker/node": "^28.0.4",
     "@google-cloud/storage": "^5.8.0",
     "archiver": "^5.1.0",
@@ -64,7 +65,7 @@
     "sqlstring": "^2.2.0",
     "ssh2-sftp-client": "^6.0.1",
     "striptags": "^3.2.0",
-    "tar": "^4.4.18",
+    "tar": "^6.1.11",
     "transliteration": "^2.1.11",
     "trash": "^7.1.0",
     "unzipper": "^0.9.10",
@@ -78,7 +79,7 @@
   },
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^11.4.10",
+    "electron": "^12.2.1",
     "node-abi": "^2.20.0"
   }
 }

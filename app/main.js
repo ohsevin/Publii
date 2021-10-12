@@ -14,6 +14,8 @@ if (typeof process.env.NODE_ENV === 'undefined') {
     process.env.NODE_ENV = 'production';
 }
 
+require('@electron/remote/main').initialize();
+
 // Keep a global reference of the window object for avoiding Garbage Collector
 let mainWindow;
 let appInstance;

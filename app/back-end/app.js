@@ -411,6 +411,7 @@ class App {
             webviewTag: true,
             spellcheck: true,
             enableRemoteModule: true,
+            contextIsolation: false,
             preload: path.join(__dirname, 'app-preload.js'),
             icon: path.join(__dirname, 'assets', 'icon.png')
         };
@@ -535,9 +536,9 @@ class App {
         });
 
         // Open Dev Tools
-        if (this.appConfig.openDevToolsInMain) {
+        // if (this.appConfig.openDevToolsInMain) {
             this.mainWindow.webContents.openDevTools();
-        }
+        // }
     }
 
     // Add events to the window

@@ -275,55 +275,9 @@ class Backup {
         // Empty the temp directory before extracting the backups content
         fs.emptyDirSync(tempDir);
 
-        let extractor = tar.Extract({
-            path: tempDir
-        })
-            .on('error', function(err) {
-                process.send({
-                    type: 'app-backup-restore-error',
-                    status: false,
-                    error: 'An error during the file save process'
-                });
-
-                setTimeout(function () {
-                    process.exit();
-                }, 1000);
-            })
-            .on('end', function() {
-                // Verify the backup
-                let backupTest = Backup.verify(tempDir, siteName);
-
-                if(!backupTest) {
-                    setTimeout(function () {
-                        process.exit();
-                    }, 1000);
-
-                    return;
-                }
-
-                // Close DB connection and remove site dir contents
-                process.send({
-                    type: 'app-backup-restore-close-db',
-                    status: true
-                });
-
-                fs.emptyDirSync(destinationPath);
-
-                // Move files from the temp dir to the site dir
-                let backupContents = fs.readdirSync(tempDir);
-
-                for(let content of backupContents) {
-                    fs.moveSync(
-                        path.join(tempDir, content),
-                        path.join(destinationPath, content)
-                    );
-                }
-
-                process.send({
-                    type: 'app-backup-restore-success',
-                    status: true
-                });
-            });
+        let extractor = tar.x({
+            cwd: tempDir
+        });
 
         fs.createReadStream(backupFilePath)
             .on('error', function(err) {
@@ -337,7 +291,42 @@ class Backup {
                     process.exit();
                 }, 1000);
             })
-            .pipe(extractor);
+            .pipe(extractor)
+            .on('end', function() {
+                // Verify the backup
+                let backupTest = Backup.verify(tempDir, siteName);
+    
+                if(!backupTest) {
+                    setTimeout(function () {
+                        process.exit();
+                    }, 1000);
+    
+                    return;
+                }
+    
+                // Close DB connection and remove site dir contents
+                process.send({
+                    type: 'app-backup-restore-close-db',
+                    status: true
+                });
+    
+                fs.emptyDirSync(destinationPath);
+    
+                // Move files from the temp dir to the site dir
+                let backupContents = fs.readdirSync(tempDir);
+    
+                for(let content of backupContents) {
+                    fs.moveSync(
+                        path.join(tempDir, content),
+                        path.join(destinationPath, content)
+                    );
+                }
+    
+                process.send({
+                    type: 'app-backup-restore-success',
+                    status: true
+                });
+            });
     }
 
     /**
