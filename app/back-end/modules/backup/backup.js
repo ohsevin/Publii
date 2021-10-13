@@ -8,7 +8,7 @@ const path = require('path');
 const Utils = require('./../../helpers/utils.js');
 const moment = require('moment');
 const archiver = require('archiver');
-const tar = require('tar');
+const tar = require('tar-fs');
 const trash = require('trash');
 
 class Backup {
@@ -275,10 +275,6 @@ class Backup {
         // Empty the temp directory before extracting the backups content
         fs.emptyDirSync(tempDir);
 
-        let extractor = tar.x({
-            cwd: tempDir
-        });
-
         fs.createReadStream(backupFilePath)
             .on('error', function(err) {
                 process.send({
@@ -291,8 +287,8 @@ class Backup {
                     process.exit();
                 }, 1000);
             })
-            .pipe(extractor)
-            .on('end', function() {
+            .pipe(tar.extract(tempDir, {
+                finish: () => {
                 // Verify the backup
                 let backupTest = Backup.verify(tempDir, siteName);
     
@@ -326,7 +322,7 @@ class Backup {
                     type: 'app-backup-restore-success',
                     status: true
                 });
-            });
+            }}));
     }
 
     /**
